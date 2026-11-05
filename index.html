@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Familiar — keep your ghost alive</title>
+  <meta name="description" content="A haunted habit tracker. Complete daily rituals to feed your pixel-ghost familiar — neglect it, and it fades into the veil. Built for Kiroween 2026.">
+  <meta name="theme-color" content="#0b0716">
+  <meta property="og:title" content="Familiar — a haunted habit tracker">
+  <meta property="og:description" content="Your habits feed a ghost. Miss them, and attend its funeral.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C9.4 3 5 9 5 16v13l4-3 4 3 3-3 3 3 4-3 4 3V16C27 9 22.6 3 16 3z' fill='%23c9b6ff'/%3E%3Ccircle cx='12' cy='15' r='2.2' fill='%23241640'/%3E%3Ccircle cx='20' cy='15' r='2.2' fill='%23241640'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Outfit:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <noscript><p style="padding:2rem;text-align:center">Familiar needs JavaScript to haunt you properly.</p></noscript>
+
+  <div class="wrap">
+    <header class="app-header">
+      <div class="brand">
+        <h1 class="logo">Familiar</h1>
+        <p class="tagline">feed it daily — or bury it</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-pill souls-pill" title="Lifetime rituals completed">
+          <span aria-hidden="true">👻</span> <b id="soulCount">0</b><span class="stat-suffix">souls</span>
+        </div>
+        <div class="stat-pill stage-pill pixel" id="stageBadge">Wisp</div>
+        <button class="icon-btn" id="soundToggle" aria-label="Toggle sound" title="Toggle sound">🔊</button>
+      </div>
+    </header>
+
+    <main class="app">
+      <!-- ============ The Terrarium ============ -->
+      <section class="panel scene" aria-label="Your familiar">
+        <div class="terrarium" id="terrarium">
+          <div class="stars" id="stars" aria-hidden="true"></div>
+          <div class="moon" aria-hidden="true"></div>
+          <div class="grave g1" aria-hidden="true"></div>
+          <div class="grave g2" aria-hidden="true"></div>
+          <div class="grave g3" aria-hidden="true"></div>
+          <div class="pumpkins" id="pumpkins" aria-hidden="true"></div>
+
+          <div class="ghost-layer">
+            <canvas id="ghostCanvas" title="Pet your familiar 👆" aria-label="Your familiar, a small ghost"></canvas>
+          </div>
+          <div class="ghost-name" id="ghostName" hidden></div>
+          <div class="stage-progress pixel" id="stageProgress"></div>
+
+          <div class="speech" id="speech" role="status">The night awaits its keeper…</div>
+          <div class="motes" id="motes" aria-hidden="true"></div>
+          <div class="fog fog-a" aria-hidden="true"></div>
+          <div class="fog fog-b" aria-hidden="true"></div>
+
+          <!-- Death overlay -->
+          <div class="grave-overlay" id="graveOverlay" hidden>
+            <div class="tomb">
+              <div class="tomb-rip">R.I.P.</div>
+              <div class="tomb-name" id="tombName">Boo</div>
+              <div class="tomb-dates" id="tombDates">d. Nov 2026</div>
+            </div>
+            <p class="tomb-epitaph" id="tombEpitaph">“A promise unkept is a candle unlit.”</p>
+            <button class="btn btn-primary" id="seanceBtn">🕯️ Perform the séance</button>
+            <p class="seance-note">The veil is merciful — it returns, but its streaks are severed.</p>
+          </div>
+
+          <!-- Essence bar -->
+          <div class="essence">
+            <span class="essence-label pixel">ESSENCE</span>
+            <div class="essence-bar"><div class="essence-fill" id="essenceFill"></div></div>
+            <span class="essence-num pixel" id="essenceNum">70</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Rituals ============ -->
+      <section class="panel rituals" aria-label="Nightly rituals">
+        <h2 class="panel-title">Nightly Rituals</h2>
+        <p class="panel-sub">Each ritual you complete feeds your familiar. The ones you skip, it starves for.</p>
+
+        <form id="ritualForm" class="ritual-form" autocomplete="off">
+          <select id="ritualIcon" aria-label="Ritual icon">
+            <option>🕯️</option><option>📖</option><option>🦴</option><option>🍵</option>
+            <option>🧘</option><option>🏃</option><option>💧</option><option>🌙</option>
+            <option>🎃</option><option>🦇</option><option>🕸️</option><option>💀</option>
+          </select>
+          <input id="ritualName" maxlength="40" placeholder="e.g. Read 10 pages" required>
+          <button class="btn btn-primary" type="submit">Summon</button>
+        </form>
+
+        <ul id="ritualList" class="ritual-list"></ul>
+        <p class="empty-state" id="emptyState" hidden>
+          No rituals summoned yet.<br><span>Your familiar drifts, hungry and patient…</span>
+        </p>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      🕯️ Built for <b>Kiroween 2026</b> · Costume Contest — <span class="footer-whisper">your familiar remembers.</span>
+    </footer>
+  </div>
+
+  <!-- ============ Onboarding ============ -->
+  <div class="modal" id="onboard" hidden>
+    <div class="modal-card">
+      <h2 class="modal-title">A Pact with the Beyond</h2>
+      <p class="modal-sub">Name your familiar and choose its hue. Feed it with daily rituals — or it fades into the veil.</p>
+
+      <label class="field-label" for="ghostNameInput">Your familiar's name</label>
+      <input id="ghostNameInput" maxlength="16" placeholder="Boo, Mogwai, Dread…" autocomplete="off">
+
+      <div class="field-label">Its hue</div>
+      <div class="variants" id="variantRow">
+        <label class="variant">
+          <input type="radio" name="variant" value="violet" checked>
+          <canvas class="variant-preview" data-variant="violet"></canvas>
+          <span>Violet</span>
+        </label>
+        <label class="variant">
+          <input type="radio" name="variant" value="mint">
+          <canvas class="variant-preview" data-variant="mint"></canvas>
+          <span>Spectral</span>
+        </label>
+        <label class="variant">
+          <input type="radio" name="variant" value="ember">
+          <canvas class="variant-preview" data-variant="ember"></canvas>
+          <span>Ember</span>
+        </label>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="beginBtn">✋ Begin the pact</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/sprites.js" defer></script>
+  <script src="js/sounds.js" defer></script>
+  <script src="js/storage.js" defer></script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
