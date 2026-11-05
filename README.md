@@ -6,6 +6,8 @@ them, and it starves, fades — and dies. Then you get to attend the funeral.
 
 > *Built for [Kiroween 2026](https://kiroween.devpost.com/) · Costume Contest*
 
+**▶ Play it live:** [asadwaheed1.github.io/familiar](https://asadwaheed1.github.io/familiar/)
+
 https://github.com/user-attachments/assets/replace-with-your-demo
 
 ## The loop
